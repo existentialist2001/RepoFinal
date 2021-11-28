@@ -1,9 +1,11 @@
-import React, { Component } from "react";
-import { Text, View,StyleSheet,SafeAreaView,ScrollView,FlatList,Linking, TextInput} from 'react-native';
+import React, { Component ,useState} from "react";
+import { Text, View,StyleSheet,SafeAreaView,ScrollView,FlatList,Linking, TextInput, TouchableOpacity} from 'react-native';
 import { Provider ,Appbar,Card,IconButton,Avatar} from 'react-native-paper';
 import * as Contacts from 'expo-contacts';
 import Icon from 'react-native-vector-icons/Entypo';
 import { MaterialIcons } from '@expo/vector-icons';
+import Contents from './tab';
+
 
 const MyWebtutsComponent = () => {
 
@@ -20,6 +22,12 @@ const MyWebtutsComponent = () => {
     const handleClick = async (number) => {
        Linking.openURL(`tel:${number}`)
     };
+    const [goTab,setGoTab]=useState(false);
+    const goTabHandler=()=>{
+        setGoTab(true);
+    }
+
+
 
     React.useEffect(() => {
     (async () => {
@@ -33,7 +41,10 @@ const MyWebtutsComponent = () => {
           }
         })();
       }, []);
-
+      if (goTab)
+      {
+          return <Contents />   
+       }
     return (
     <Provider>
       <View style={styles.header}>
@@ -63,6 +74,9 @@ const MyWebtutsComponent = () => {
           borderColor: 'red',
           color: 'white',
         }}></TextInput>
+        <TouchableOpacity>
+        <Text onPress={goTabHandler}>임시버튼 --</Text>
+        </TouchableOpacity>
 
       </View>
         <View style={styles.mainbox}>

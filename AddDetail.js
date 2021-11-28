@@ -6,6 +6,7 @@ import Cell from './components/Cell';
 import MBTI from './components/MBTI';
 import Group from './components/Group';
 import RelatedPpl from './components/RelatedPpl';
+import Contents from './screens/tab';
 
 //엑스포 아이콘
 import { Entypo } from "@expo/vector-icons";
@@ -15,8 +16,16 @@ import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons'; 
 //빈거 <Feather name="star" size={24} color="black" />
 //찬거 <FontAwesome name="star" size={24} color="yellow" />
-export default function EditDetail(props) {
+const EditDetail=(props)=> {
+  const [goBack,setGoBack]=useState(false);
+  const goBackHandler=()=>{
+      setGoBack(true);
+  }
 
+  if (goBack)
+  {
+      return <Contents/>   
+   }
   const [enteredName, setEnteredName] = useState('');
   const [confirmed, setConfirmed] = useState(false);
   const [finalName, setFinalName] = useState('');
@@ -201,6 +210,7 @@ else{
   star=<Feather name="star" size={24} color="black" />;
 }
 
+
   return (
  
       
@@ -211,7 +221,7 @@ else{
         <Pressable><Text style={{color:'blue'}}>저장</Text></Pressable>
       </View> */}
           <View style={styles.horizontal}>
-              <TouchableOpacity onPress={()=>props.goback(false) }>
+              <TouchableOpacity onPress={()=>props._goBack(false) }>
                 <MaterialIcons name="arrow-back-ios" size={24} color="gray" />
               </TouchableOpacity>
               <Pressable onPress={clickStarHandler}>
@@ -479,3 +489,4 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   }
 });
+export default EditDetail;

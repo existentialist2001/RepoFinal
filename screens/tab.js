@@ -1,34 +1,49 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text, Button, TouchableOpacity, Image, ScrollView, ImageBackground, SafeAreaView, Linking } from 'react-native';
+import React, { Component,useState } from "react";
+import { StyleSheet, View, Text, Button, TouchableOpacity, Image, ScrollView, ImageBackground, SafeAreaView, Linking, FlatList } from 'react-native';
 import { Provider ,Appbar,Card,IconButton,Avatar, Title} from 'react-native-paper';
 import * as Contacts from 'expo-contacts';
 import Icon from 'react-native-vector-icons/Entypo';
+import EditDetail from "../AddDetail";
+import PersonSpecific from "../PersonSpecific";
 
 
-export const Header = () => {
-    return (
-        <View style= {[styles.container, styles.header]}>
-
-        </View>
-    );
-};
-
-export const Contents = () => {
+ const Contents = () => {
+    const [AddContact,setAddContact]=useState(false);
+    const AddContactHandler=()=>{
+        setAddContact(true);
+    }
+   
     const [data, setData] = React.useState([]);
 
     const picture = (props) =>    <Icon name="user"  style={styles.iconBox} size={27} color="black" />;
     
     const [PhoneNumber, setPhoneNumber] = React.useState([]);
+    const [goLookSpecific,setGoLookSpecific]=useState(false);
+    const goLookSpecificHandler=()=>{
+        setContactTab(true);
+    }
 
-    const _goBack = () => console.log('Went back');
+    
 
-    const _handleSearch = () => console.log('Searching');
-
-    const _handleMore = () => console.log('Shown more');
 
     const handleClick = async (number) => {
        Linking.openURL(`tel:${number}`)
     };
+    //
+    const renderItem = ({item}) => {
+        return(
+                  
+                    <TouchableOpacity onPress={()=>console.log("클릭")} style={styles.blocks}>   
+             
+                        <Image source={{uri: 'https://reactjs.org/logo-og.png'}}
+       style={{width: 100, height: 100, borderRadius: 100}} />
+                        <Text style={{paddingTop: 10,
+                            fontWeight: '700', color: "#6B6A6A", textAlign:'center'}}>{item.name}</Text>
+          
+                        </TouchableOpacity> 
+                       
+                    );
+    }
 
     React.useEffect(() => {
     (async () => {
@@ -42,9 +57,20 @@ export const Contents = () => {
           }
         })();
       }, []);
+      if (AddContact)
+      {
+          return <EditDetail _goBack={setAddContact}/>   
+       }
+       if (goLookSpecific)
+    {
+        return <PersonSpecific/>   
+     }
     return (
         <View style={[styles.container, styles.contents]}>
             <View style={{height: 230}}>
+                <TouchableOpacity>
+                <Text onPress={AddContactHandler}>plus</Text>
+                </TouchableOpacity>
             <Text style = {styles.title}>Relationship</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator ={false}
              contentContainerStyle={{
@@ -77,23 +103,18 @@ export const Contents = () => {
             </View>
 
             <View style={styles.mainbox}>
-              <ScrollView>
-                  
-                     { 
-                    data.map((l, i) => (
-                        <Card key={i} style={styles.cardbox}  onPress={() => handleClick(l.phoneNumbers ? l.phoneNumbers[0].number : '')}  >
-                            
-                            <Card.Title
-                                title= "" left = {picture}
-                            />
-                            <Card.Content>
-                                <Title>{l.name}</Title>
+            <FlatList
+                    data={data}
+                    columnWrapperStyle={{justifyContent:'space-around'}}
+                    keyExtractor={index => index.toString()}
+                    numColumns={3}
+                    renderItem={renderItem}
 
-                            </Card.Content>
-                        </Card>
-                    ))
-                   }
-              </ScrollView>
+                
+
+
+                />
+
         </View>
 
             
@@ -104,6 +125,13 @@ export const Contents = () => {
 
 
 const styles = StyleSheet.create({
+    blocks:{
+        width: 100,
+        height: 130,
+        margin: 25,
+
+
+    },
     tapTextLast:{
         color: '#686868',
         fontSize: 30,
@@ -119,6 +147,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingBottom: 20
     },
     header: {
         alignItems: 'flex-end',
@@ -189,13 +218,15 @@ const styles = StyleSheet.create({
         marginTop: -60,
     },
     mainbox:{
-        width: "70%",
-        textAlign:'center',
-        marginLeft:10,
-        marginRight:10,
-        marginBottom:0,
+        // display: 'flex',
+        // width: "95%",
+        // textAlign:'center',
+        // marginLeft:10,
+        // marginRight:10,
+        // marginBottom:10,
+        // justifyContent: 'space-evenly',       
+        // flexDirection: 'row',
         flex: 1,
-        justifyContent: 'space-between',
     },
     iconBox:{
         width: 50,
@@ -205,8 +236,11 @@ const styles = StyleSheet.create({
         textAlign:'center'
     },
     cardbox:{
+        width: 100,
+        height: 130,
         margin: 10,
         borderColor: 'white',
     },
 
 })
+export default Contents;
